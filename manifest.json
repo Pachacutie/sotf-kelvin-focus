@@ -1,10 +1,10 @@
 {
   "$schema": "https://raw.githubusercontent.com/ToniMacaroni/RedLoader/main/MetadataSchema.json",
   "id": "SOTF_KELVIN_FOCUS",
-  "author": "You",
+  "author": "Pachacutie",
   "version": "1.0.0",
-  "description": "A mod that does something.",
+  "description": "Stops Kelvin from detouring to loose logs when commanded to fill a log holder.",
   "gameVersion": "1.0.0",
   "type": "Mod",
-  "url": "..."
+  "url": "https://github.com/Pachacutie"
 }
