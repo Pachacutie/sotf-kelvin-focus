@@ -1,0 +1,31 @@
+# Workshop conventions
+CLAUDE.md
+.claude/
+.superpowers/
+
+# C# / .NET build output
+bin/
+obj/
+ReleaseBuild/
+*.user
+*.suo
+*.cache
+*.DotSettings
+*.csproj.user
+
+# IDE folders
+.vs/
+.vscode/
+.idea/
+.run/
+
+# Research scratch (Il2Cpp dumps, notes, sandbox builds)
+_research/
+dummy_dll/
+
+# Logs
+*.log
+
+# OS
+Thumbs.db
+.DS_Store
