@@ -17,11 +17,17 @@ This mod Harmony-prefixes `Sons.Ai.Vail.Thought.CanRun` and forces it to return 
 
 Cross-task isolation is architectural: each Get-task is its own `Sons.Ai.Vail.Group` with its own Thoughts list, so the patch cannot affect sticks, rocks, berries, or combat. See `DISCOVERY.md` for the full inspection workflow.
 
-## Installation
+## Install
+
+### From Release (recommended)
 
 1. Install [RedLoader](https://github.com/ToniMacaroni/RedLoader) into your Sons of the Forest install (drop the contents of `Redloader.zip` into the game directory).
-2. Place `SOTF_KELVIN_FOCUS.dll` and the `SOTF_KELVIN_FOCUS/` folder (containing `manifest.json`) into `<gameDir>\Mods\`.
+2. Download `SOTF_KELVIN_FOCUS.zip` from the [latest release](https://github.com/Pachacutie/sotf-kelvin-focus/releases/latest) and extract it into your game directory — the bundled `Mods/` folder slots into the install.
 3. Pin Steam updates: SOTF → Properties → Updates → "Only update when I launch." (Steam auto-updates routinely break IL2CPP mods.)
+
+### Manual
+
+If you've built from source or have the loose files: drop `SOTF_KELVIN_FOCUS.dll` and the `SOTF_KELVIN_FOCUS/` folder (containing `manifest.json`) into `<gameDir>\Mods\`. Pin Steam updates as above.
 
 ## Quick Start
 
@@ -54,6 +60,10 @@ The zip is created at `ReleaseBuild\SOTF_KELVIN_FOCUS.zip`.
 - **Game version tested:** SOTF Steam buildid `20228174` (released 2025-10-10). Should work on any build where `Sons.Ai.Vail.Thought.CanRun` exists and the loose-log Thought's `_stimuliTargetId` is still `"LogPickup"`.
 - **RedLoader version tested:** 0.8.6
 - **Known mod conflicts:** None confirmed. ImmortalCompanions, Restless Kelvin, and LITF - Improved Kelvin all touch Kelvin's components but at different layers; conflicts unlikely but worth verifying.
+
+## Issues
+
+If Kelvin gets stuck mid-task — particularly recovering a dropped log, or in worlds with many pre-existing ground logs — please [open an issue](https://github.com/Pachacutie/sotf-kelvin-focus/issues) with the scenario and your save info. The current patch is unconditional; a regression report will trigger conditional gating work.
 
 ## Contributing
 
