@@ -124,17 +124,35 @@ Once you have a working live patch via UE:
 
 ## Confirmed Findings
 
-_(Fill these in during/after live discovery. Until populated, no patch is written in source.)_
+Populated from live UnityExplorer discovery on 2026-05-07.
 
-- **Game version tested:** `__________`
-- **Kelvin AI component class (full namespace):** `__________`
-- **Loose-log scan method signature:** `__________::__________(...)`
-- **Radius field (Strategy B viable?):** `__________` (current value: `____`)
-- **Active-task enum/property:** `__________`
-- **Active-task value when "Get Logs Fill Holder" is running:** `__________`
-- **Patch strategy chosen:** [ ] B (radius)  [ ] A (method prefix)
-- **Cross-task side-effects observed:** `__________`
-- **Required filter (if scanner is generic):** `__________`
+- **Game version tested:** SOTF on Unity 2022.2.16f1 (specific SOTF build version not pinned in `manifest.json` — carry-forward).
+- **Kelvin AI component class (full namespace):** `Sons.Ai.Vail.Thought` is the unit of behavior. It lives inside a `Sons.Ai.Vail.Group` named "RobbyGetLog", referenced by a `Sons.Ai.Vail.VailControllerOverride` (also named "RobbyGetLog") via a `StateSet` → `GroupListItem`.
+- **Loose-log scan method signature:** `Sons.Ai.Vail.Thought::CanRun(VailActor, ref IStimuli, ConditionSet, bool) -> bool`. This is the gate before `Group.TryRunThought` and is what we patch. Other viable patch points existed (`Group.TryRunThought`, `Group.Run`) but `CanRun` is the cleanest gate.
+- **Radius field (Strategy B viable?):** Not viable. The "pickup log" Thought uses `_stimuliQuery = StimuliQueryFar` (global scan, not distance-bounded); its `_maxDistance` field is 0 / inert. There is no radius to shrink.
+- **Active-task enum/property:** `Thought._stimuliTargetId` (string).
+- **Active-task value when "Get Logs Fill Holder" is running:** `_stimuliTargetId == "LogPickup"`, `_stimuliTargetType == Sons.Ai.Vail.StimuliTypes.LogPickupStimuli`, `_thoughtMessage == "pickup log"`. Any of these three is sufficient to identify the target Thought; the patch uses `_stimuliTargetId` as the most semantic and stable identifier.
+- **Patch strategy chosen:** [ ] B (radius)  [x] A (method prefix). Implementation in `Patches/KelvinSkipLooseLogPatch.cs`.
+- **Cross-task side-effects observed:** None. Live test on 2026-05-07: with the loose-log Thought muted, `Get → Sticks → Fill Holder` and `Get → Rocks → Drop Here` both worked normally (loose sticks and rocks still picked up). Architectural reason: each player Get-task is its own `Sons.Ai.Vail.Group` (`RobbyGetSticks`, `RobbyGetRocks`, etc.) with its own Thoughts list — `RobbyGetLog`'s Thought[0] is not shared with any other task.
+- **Required filter (if scanner is generic):** Not needed. The scanner is per-Thought and per-Group. Identifying the Thought via `_stimuliTargetId == "LogPickup"` is already item-type-specific; no active-task gating layered on top.
+
+## Architecture Notes (post-discovery)
+
+Kelvin's AI is a **stimulus-driven scoring competition** under the `Sons.Ai.Vail` namespace:
+
+- A player command activates a `VailControllerOverride` ScriptableObject (here: "RobbyGetLog").
+- The Override's `_stateSets` (List<StateSet>) holds StateSets; each StateSet contains a `_groupsList` (List<GroupListItem>).
+- Each `GroupListItem` references a `Sons.Ai.Vail.Group` (here: "RobbyGetLog" Group).
+- The Group exposes a `_thoughts` list. **`RobbyGetLog` has 3 Thoughts:**
+  - **Thought[0]** — `_thoughtMessage = "pickup log"`, `_stimuliTargetId = "LogPickup"`, `_stimuliTargetType = LogPickupStimuli`. Scans for loose ground logs. **This is the detour.**
+  - **Thought[1]** — `_thoughtMessage = "drop log"`, `_stimuliTargetId = "Robby Drop"`, `_stimuliTargetType = RobbyDropStimuli`. Deposits a carried log at the holder.
+  - **Thought[2]** — `_thoughtMessage = "follow player with log"`, `_stimuliTargetId = "Robby Follow"`, `_stimuliTargetType = RobbyFollowStimuli`. Idle/transit while carrying.
+- Each tick, the state machine scores valid Thoughts (via `CalculateGroupScore`, `_drivers`, etc.) and runs the winner. `Thought.CanRun(...)` is checked first — return `false` here and the Thought is excluded from selection entirely.
+- **Tree-chopping is a separate Group** (`RobbyClearTree`), invoked when no log-acquisition Thought is available. Suppressing `RobbyGetLog`'s Thought[0] cleanly redirects Kelvin to chopping without any custom fallback logic.
+
+**Live test method (used to validate the patch target before writing code):** Set `Thought._mute = true` directly on the matching Thought instance via UnityExplorer's Inspector, click Apply, then trigger Fill Holder. Result on 2026-05-07: Kelvin walked straight to a tree with 4 loose logs sitting in front of him. UE edits don't persist to disk, so muting reverts on game restart.
+
+**Patch implementation:** [`Patches/KelvinSkipLooseLogPatch.cs`](Patches/KelvinSkipLooseLogPatch.cs) Harmony-prefixes `Thought.CanRun` and forces `__result = false` when `__instance._stimuliTargetId == "LogPickup"`.
 
 ## References
 

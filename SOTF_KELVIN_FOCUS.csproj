@@ -24,6 +24,9 @@
       <Reference Include="Sons">
         <HintPath>$(GameDir)\_RedLoader\Game\Sons.dll</HintPath>
       </Reference>
+      <Reference Include="Sons.Ai.Vail">
+        <HintPath>$(GameDir)\_RedLoader\Game\Sons.Ai.Vail.dll</HintPath>
+      </Reference>
       <Reference Include="Endnight">
           <HintPath>$(GameDir)\_RedLoader\Game\Endnight.dll</HintPath>
       </Reference>
