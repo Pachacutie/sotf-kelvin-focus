@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-05-07
+
 ### Added
 
 - Initial project scaffold via `dotnet new sotfmod` (RedLoader.Templates 1.2.7).
@@ -17,8 +19,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - `SOTF_KELVIN_FOCUS.csproj`: added `Sons.Ai.Vail.dll` reference (required by patch).
 - `SOTF_KELVIN_FOCUS.cs`: enabled `HarmonyPatchAll = true` so RedLoader auto-applies patches in this assembly.
+- `manifest.json`: `version` set to `0.1.0` to align with this release (was `1.0.0` template default).
 
 ### Notes
 
-- v0 patch target validated live via UnityExplorer manual mute of `Thought._mute` on the loose-log Thought instance. Patched-DLL build/verification still pending.
-- Game version tested: SOTF on Unity 2022.2.16f1 (specific SOTF build version not pinned in `manifest.json`).
+- v0 patch verified live in-game with patched DLL on 2026-05-07 (test save `6154988860`, 4 loose logs in front of Kelvin → he walked straight to a tree).
+- Game version tested: SOTF on Unity 2022.2.16f1 (specific SOTF build version not pinned in `manifest.json` — open carry-forward).
