@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Changed
+
+- `manifest.json`: pinned `gameVersion` to Steam buildid `20228174` (the build SOTF was on as of last update 2025-10-10). Resolves the open carry-forward from 0.1.0; was the template default `1.0.0`.
+
 ## [0.1.0] - 2026-05-07
 
 ### Added

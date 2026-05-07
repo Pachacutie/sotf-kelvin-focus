@@ -9,9 +9,6 @@ public static class Config
 
     //public static ConfigEntry<bool> SomeEntry { get; private set; }
 
-    // Auto populated after calling SettingsRegistry.CreateSettings...
-    private static SettingsRegistry.SettingsEntry _settingsEntry;
-
     public static void Init()
     {
         Category = ConfigSystem.CreateFileCategory("SOTF_KELVIN_FOCUS", "SOTF_KELVIN_FOCUS", "SOTF_KELVIN_FOCUS.cfg");
