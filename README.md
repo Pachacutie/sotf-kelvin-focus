@@ -11,12 +11,11 @@ Stops Kelvin from detouring to loose logs when commanded to fill a log holder, s
 
 ## How It Works
 
-When given `Get > Logs > Fill Holder`, Kelvin's AI runs a loose-item scan before deciding where to go. If any loose log is detected within his scan radius, he detours to pick it up first. This mod patches that scan path so the loose-log search is skipped or its radius is collapsed, depending on what the live game exposes (see `DISCOVERY.md` for the discovery workflow).
+Kelvin's AI is a stimulus-driven scoring competition under `Sons.Ai.Vail`. When given `Get > Logs > Fill Holder`, the "RobbyGetLog" task evaluates three Thoughts each tick: pickup-loose-log, drop-log-at-holder, and follow-player-with-log. The pickup Thought uses a global stimulus query (not a distance-bounded one), so it scores high whenever any loose log exists in the scene — that's the detour.
 
-Two implementation strategies are evaluated in order:
+This mod Harmony-prefixes `Sons.Ai.Vail.Thought.CanRun` and forces it to return `false` whenever the Thought's `_stimuliTargetId == "LogPickup"`. With that Thought removed from selection, Kelvin's state machine falls through to the sibling `RobbyClearTree` Group and chops a tree; the resulting log is then deposited by the drop-log Thought normally.
 
-- **Strategy B (preferred):** Reduce the loose-log scan radius to ~0 via a Harmony postfix on the relevant getter, leaving the rest of Kelvin's task path untouched.
-- **Strategy A (fallback):** Harmony-prefix the loose-log scan method to return null/empty, forcing Kelvin to fall through to tree-chopping.
+Cross-task isolation is architectural: each Get-task is its own `Sons.Ai.Vail.Group` with its own Thoughts list, so the patch cannot affect sticks, rocks, berries, or combat. See `DISCOVERY.md` for the full inspection workflow.
 
 ## Installation
 
@@ -52,10 +51,10 @@ The zip is created at `ReleaseBuild\SOTF_KELVIN_FOCUS.zip`.
 
 ## Compatibility
 
-- **Game version tested:** _(populated when v0 ships)_
+- **Game version tested:** SOTF Steam buildid `20228174` (released 2025-10-10). Should work on any build where `Sons.Ai.Vail.Thought.CanRun` exists and the loose-log Thought's `_stimuliTargetId` is still `"LogPickup"`.
 - **RedLoader version tested:** 0.8.6
 - **Known mod conflicts:** None confirmed. ImmortalCompanions, Restless Kelvin, and LITF - Improved Kelvin all touch Kelvin's components but at different layers; conflicts unlikely but worth verifying.
 
 ## Contributing
 
-This project is part of [the Workshop](../../README.md). Branches use `feat/`, `fix/`, `docs/`, `chore/` prefixes; commits follow Conventional Commits; merges to main require ARCHITECT approval (squash merge).
+Pull requests welcome. Branches use `feat/`, `fix/`, `docs/`, `chore/` prefixes; commits follow [Conventional Commits](https://www.conventionalcommits.org/). PRs squash-merge to main.

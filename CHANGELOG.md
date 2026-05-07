@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Changed
 
 - `manifest.json`: pinned `gameVersion` to Steam buildid `20228174` (the build SOTF was on as of last update 2025-10-10). Resolves the open carry-forward from 0.1.0; was the template default `1.0.0`.
+- `README.md`: refreshed "How It Works" to describe the shipped Strategy A patch (Sons.Ai.Vail stimulus-driven scoring + Thought.CanRun prefix on `_stimuliTargetId == "LogPickup"`); the prior text described both strategies as to-evaluate. Pinned game version tested to the buildid. Generalized the Contributing section for public visibility (removed internal-only links and approval references).
 
 ## [0.1.0] - 2026-05-07
 
